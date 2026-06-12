@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presupuesto ALZU</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;900&family=Barlow+Condensed:wght@700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--rojo:#CC0000;--negro:#1a1a1a;--gris:#f5f5f5;--borde:#ddd}
+  body{background:#e8e8e8;font-family:'Barlow',sans-serif;color:var(--negro);padding:20px}
+  .controles{max-width:900px;margin:0 auto 14px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  .btn{padding:9px 20px;border:none;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;border-radius:3px;transition:all .15s}
+  .btn-rojo{background:var(--rojo);color:#fff}.btn-rojo:hover{background:#aa0000}
+  .btn-gris{background:#555;color:#fff}.btn-gris:hover{background:#333}
+  .btn-verde{background:#2a7d2a;color:#fff}.btn-verde:hover{background:#1f5e1f}
+  .btn-azul{background:#1a6fb5;color:#fff}.btn-azul:hover{background:#155a94}
+  .sheet{max-width:900px;margin:0 auto;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.18)}
+  .header{padding:28px 36px 0}
+  .header-inner{display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding-bottom:18px}
+  .logo{width:260px;max-width:80%}
+  .redline{height:4px;background:var(--rojo);margin:0 36px}
+  .info-row{display:flex;align-items:center;justify-content:space-between;padding:14px 36px 0;flex-wrap:wrap;gap:10px}
+  .title-pres{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:900;color:var(--rojo);letter-spacing:1px}
+  .meta-right{text-align:right;display:flex;gap:24px}
+  .meta-field label{display:block;font-size:10px;font-weight:700;color:var(--rojo);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+  .meta-field input{border:none;border-bottom:1.5px solid var(--borde);font-family:'Barlow',sans-serif;font-size:14px;color:var(--negro);width:140px;text-align:right;outline:none;padding:2px 0;background:transparent}
+  .meta-field input:focus{border-bottom-color:var(--rojo)}
+  .client-block{margin:16px 36px 0;display:grid;grid-template-columns:1fr 1fr 1fr}
+  .cl-head{background:var(--rojo);color:#fff;font-size:11px;font-weight:700;letter-spacing:.5px;padding:7px 12px;text-transform:uppercase}
+  .cl-body{background:var(--gris);padding:8px 12px}
+  .cl-body input{width:100%;border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:14px;color:var(--negro);outline:none}
+  .cl-body input:focus{border-bottom:1px solid var(--rojo)}
+  .table-wrap{margin:16px 36px 0;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  thead th{background:var(--rojo);color:#fff;padding:9px 10px;font-weight:700;letter-spacing:.3px;font-size:12px}
+  thead th:first-child{text-align:left}
+  thead th:nth-child(2){text-align:center;width:60px}
+  thead th:nth-child(3){text-align:left}
+  thead th:nth-child(4){text-align:center;width:120px}
+  thead th:nth-child(5){text-align:right;width:130px}
+  tbody tr:nth-child(even){background:#fafafa}
+  tbody tr:nth-child(odd){background:#fff}
+  tbody tr:hover{background:#fff3f3}
+  tbody td{padding:0;border-bottom:1px solid #eee}
+  tbody td input{width:100%;border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:13.5px;color:var(--negro);padding:8px 10px;outline:none}
+  tbody td input:focus{background:#fff5f5}
+  tbody td:nth-child(2) input{text-align:center}
+  tbody td:nth-child(4) input{text-align:center}
+  tbody td:nth-child(5) input{text-align:right}
+  .del-btn{background:none;border:none;cursor:pointer;color:#ccc;font-size:16px;padding:0 6px;line-height:1}
+  .del-btn:hover{color:var(--rojo)}
+  tbody td.del-cell{width:28px;padding:0 4px}
+  .add-row-wrap{margin:8px 36px 0;text-align:left}
+  .add-row-btn{background:none;border:1.5px dashed #bbb;color:#888;font-family:'Barlow',sans-serif;font-size:13px;padding:6px 16px;cursor:pointer;border-radius:3px;transition:all .15s}
+  .add-row-btn:hover{border-color:var(--rojo);color:var(--rojo)}
+  .nota-block{margin:16px 36px 0;background:#f9f9f9;border-left:4px solid var(--rojo);padding:14px 18px}
+  .nota-title{font-size:11px;font-weight:700;color:var(--rojo);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+  .nota-items{list-style:disc;padding-left:18px;margin-bottom:10px}
+  .nota-items li{font-size:13.5px;color:var(--negro);margin-bottom:4px}
+  .nota-item-input{width:100%;border:none;border-bottom:1px dashed #ccc;background:transparent;font-family:'Barlow',sans-serif;font-size:13.5px;color:var(--negro);padding:2px 4px;outline:none}
+  .nota-item-input:focus{border-bottom-color:var(--rojo);background:#fff5f5}
+  .vigencia{margin-top:10px;font-size:13px;color:#555}
+  .totals{margin:12px 36px 0;display:flex;justify-content:flex-end}
+  .totals-inner{width:340px}
+  .autosum-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px 6px;border-bottom:2px solid #eee;margin-bottom:4px}
+  .autosum-label{font-size:12px;font-weight:700;color:#888;letter-spacing:.3px;text-transform:uppercase}
+  .toggle{position:relative;display:inline-block;width:44px;height:24px}
+  .toggle input{opacity:0;width:0;height:0}
+  .slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:24px;transition:.3s}
+  .slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+  input:checked+.slider{background:var(--rojo)}
+  input:checked+.slider:before{transform:translateX(20px)}
+  .autosum-active .autosum-label{color:var(--rojo)}
+  .total-row{display:flex;justify-content:space-between;padding:6px 10px;border-bottom:1px solid #eee;font-size:14px;align-items:center}
+  .total-row input[type=text]{border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:14px;text-align:right;width:130px;outline:none;color:var(--negro)}
+  .total-row input[type=text]:focus{border-bottom:1px solid var(--rojo)}
+  .total-row.grand{background:var(--rojo);color:#fff;font-weight:700;font-size:15px;border-bottom:none}
+  .total-row.grand input[type=text]{color:#fff;font-weight:700;font-size:15px}
+  .cond-block{margin:16px 36px 0;display:grid;grid-template-columns:1fr 1fr 1fr}
+  .cond-cell{background:var(--gris);padding:10px 14px;border-right:1px solid #ddd}
+  .cond-cell:last-child{border-right:none}
+  .cond-label{font-size:10px;font-weight:700;color:var(--rojo);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+  .cond-cell input{width:100%;border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:13.5px;outline:none}
+  .cond-cell input:focus{border-bottom:1px solid var(--rojo)}
+  .footer-line{height:3px;background:var(--rojo);margin:18px 36px 0}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;padding:10px 36px 24px}
+  .footer-brand{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--rojo);letter-spacing:1px}
+  .footer-right{text-align:right}
+  .footer-right input{border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:13px;color:#666;text-align:right;outline:none;display:block;width:280px}
+  .footer-right input.contact{font-weight:700;color:var(--rojo);font-size:14px}
+  .footer-right input:focus{border-bottom:1px solid var(--rojo)}
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+  .toast.show{opacity:1}
+  @media print{
+    body{background:#fff;padding:0}
+    .controles,.add-row-wrap,.del-cell{display:none}
+    .sheet{box-shadow:none;max-width:100%}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+
+<div class="controles">
+  <button class="btn btn-azul" onclick="window.location.href='historial.html'">📋 Ver historial</button>
+  <button class="btn btn-verde" onclick="addRow()">＋ Agregar ítem</button>
+  <button class="btn btn-rojo" onclick="guardarPresupuesto()">💾 Guardar presupuesto</button>
+  <button class="btn btn-gris" onclick="window.print()">🖨 Imprimir / PDF</button>
+</div>
+
+<div class="sheet">
+  <div class="header">
+    <div class="header-inner">
+      <img class="logo" src="data:image/jpeg;base64," alt="ALZU">
+    </div>
+  </div>
+  <div class="redline"></div>
+
+  <div class="info-row">
+    <div class="title-pres">PRESUPUESTO</div>
+    <div class="meta-right">
+      <div class="meta-field"><label>Nro.</label><input type="text" id="nro" placeholder="R0000A"></div>
+      <div class="meta-field"><label>Fecha</label><input type="text" id="fecha" placeholder="dd/mm/aaaa"></div>
+    </div>
+  </div>
+
+  <div class="client-block">
+    <div><div class="cl-head">Cliente</div><div class="cl-body"><input id="cliente" placeholder="Nombre del cliente"></div></div>
+    <div><div class="cl-head">Contacto/s</div><div class="cl-body"><input id="contacto" placeholder="Nombre del contacto"></div></div>
+    <div><div class="cl-head">Campaña</div><div class="cl-body"><input id="campana" placeholder="Nombre de la campaña"></div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Descripción</th>
+          <th>Cant.</th>
+          <th>Destinatario</th>
+          <th>N° de Remito</th>
+          <th>Total</th>
+          <th style="width:28px"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="add-row-wrap">
+    <button class="add-row-btn" onclick="addRow()">＋ Agregar ítem</button>
+  </div>
+
+  <div class="nota-block">
+    <div class="nota-title">La cotización incluye los siguientes ítems:</div>
+    <ul class="nota-items">
+      <li>Retiro de Productos de planta La Serenísima — GENERAL RODRIGUEZ con un vehículo refrigerado.</li>
+      <li>Incluye: PEAJES, ART, seguro de vida y otros según leyes vigentes.</li>
+      <li>Comunicación con los responsables de las cuenta.</li>
+    </ul>
+    <div class="vigencia">Los valores del presente presupuesto no incluyen IVA.</div>
+  </div>
+
+  <div class="totals">
+    <div class="totals-inner">
+      <div class="autosum-row">
+        <span class="autosum-label">Cálculo automático</span>
+        <label class="toggle">
+          <input type="checkbox" id="autosum-toggle" onchange="toggleAutosum()">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="total-row">
+        <span>Subtotal</span>
+        <input type="text" id="subtotal" placeholder="$ 0,00">
+      </div>
+      <div class="total-row">
+        <span>Coordinación agencia <input type="number" id="pct-coord" value="12" min="0" max="100" style="width:36px;border:none;border-bottom:1.5px solid #ccc;font-size:13px;text-align:center;outline:none;background:transparent;color:#1a1a1a">%</span>
+        <input type="text" id="coordinacion" placeholder="$ 0,00">
+      </div>
+      <div class="total-row grand">
+        <span>TOTAL NETO CON FEE</span>
+        <input type="text" id="total-neto" placeholder="$ 0,00">
+      </div>
+    </div>
+  </div>
+
+  <div class="cond-block">
+    <div class="cond-cell"><div class="cond-label">Forma de pago</div><input id="pago" placeholder="Ej: 60 días"></div>
+    <div class="cond-cell"><div class="cond-label">Impuestos</div><input id="impuestos" placeholder="Los valores no incluyen IVA"></div>
+    <div class="cond-cell"><div class="cond-label">Validez</div><input id="validez" placeholder="15 días desde la emisión"></div>
+  </div>
+
+  <div class="footer-line"></div>
+  <div class="footer">
+    <div class="footer-brand">ALZU</div>
+    <div class="footer-right">
+      <input type="text" id="nombre-cargo" placeholder="[Nombre] · [Cargo]">
+      <input type="text" class="contact" value="San Jose de Flores 5636  |  +54 11 6141 3360">
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+  var db;
+
+  window.addEventListener('load', function() {
+    var firebaseConfig = {
+      apiKey: "AIzaSyDQNKm3jwmP3r59eDzIbG3tIulZkm1qtNQ",
+      authDomain: "alzupresupuestos.firebaseapp.com",
+      databaseURL: "https://alzupresupuestos-default-rtdb.firebaseio.com",
+      projectId: "alzupresupuestos",
+      storageBucket: "alzupresupuestos.firebasestorage.app",
+      messagingSenderId: "340768090431",
+      appId: "1:340768090431:web:dc208c4f22393326ae8b8a"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    for (var i = 0; i < 7; i++) addRow();
+  });
+
+  document.getElementById('fecha').value = new Date().toLocaleDateString('es-AR');
+
+  var autosumOn = false;
+
+  function fmtPeso(n) {
+    return '$ ' + n.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function parsePeso(str) {
+    var s = str.replace(/$/g,'').replace(/\s/g,'').replace(/\./g,'').replace(',','.');
+    var n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function calcular() {
+    if (!autosumOn) return;
+    var rows = document.querySelectorAll('#tbody tr');
+    var subtotal = 0;
+    rows.forEach(function(tr) {
+      var inputs = tr.querySelectorAll('input');
+      subtotal += parsePeso(inputs[4].value);
+    });
+    var pct = parseFloat(document.getElementById('pct-coord').value) || 0;
+    var coord = subtotal * pct / 100;
+    document.getElementById('subtotal').value = fmtPeso(subtotal);
+    document.getElementById('coordinacion').value = fmtPeso(coord);
+    document.getElementById('total-neto').value = fmtPeso(subtotal + coord);
+  }
+
+  function toggleAutosum() {
+    autosumOn = document.getElementById('autosum-toggle').checked;
+    var row = document.querySelector('.autosum-row');
+    var ids = ['subtotal','coordinacion','total-neto'];
+    if (autosumOn) {
+      row.classList.add('autosum-active');
+      ids.forEach(function(id) {
+        document.getElementById(id).readOnly = true;
+        document.getElementById(id).style.background = '#fff8f8';
+      });
+      document.getElementById('tbody').addEventListener('input', calcular);
+      document.getElementById('pct-coord').addEventListener('input', calcular);
+      calcular();
+    } else {
+      row.classList.remove('autosum-active');
+      ids.forEach(function(id) {
+        document.getElementById(id).readOnly = false;
+        document.getElementById(id).style.background = 'transparent';
+      });
+      document.getElementById('tbody').removeEventListener('input', calcular);
+    }
+  }
+
+  function addRow() {
+    var tbody = document.getElementById('tbody');
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td><input type="text" placeholder="Descripción del ítem"></td>' +
+      '<td><input type="text" placeholder="1"></td>' +
+      '<td><input type="text" placeholder="Destinatario"></td>' +
+      '<td><input type="text" placeholder="000-0000000"></td>' +
+      '<td><input type="text" placeholder="$ 0,00"></td>' +
+      '<td class="del-cell"><button class="del-btn" onclick="delRow(this)" title="Eliminar">✕</button></td>';
+    tbody.appendChild(tr);
+    if (autosumOn) calcular();
+  }
+
+  function delRow(btn) {
+    btn.closest('tr').remove();
+    if (autosumOn) calcular();
+  }
+
+  function showToast(msg, color) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = color || '#222';
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }
+
+  function guardarPresupuesto() {
+    var nro = document.getElementById('nro').value.trim();
+    var cliente = document.getElementById('cliente').value.trim();
+    if (!nro || !cliente) { showToast('Completá el Nro. y el Cliente antes de guardar','#CC0000'); return; }
+    if (!db) { showToast('Base de datos no lista, esperá un momento','#CC0000'); return; }
+
+    var items = [];
+    document.querySelectorAll('#tbody tr').forEach(function(tr) {
+      var inputs = tr.querySelectorAll('input');
+      items.push({
+        desc: inputs[0].value,
+        cant: inputs[1].value,
+        destinatario: inputs[2].value,
+        remito: inputs[3].value,
+        total: inputs[4].value
+      });
+    });
+
+    var data = {
+      nro: nro,
+      fecha: document.getElementById('fecha').value,
+      cliente: cliente,
+      contacto: document.getElementById('contacto').value,
+      campana: document.getElementById('campana').value,
+      subtotal: document.getElementById('subtotal').value,
+      coordinacion: document.getElementById('coordinacion').value,
+      totalNeto: document.getElementById('total-neto').value,
+      pago: document.getElementById('pago').value,
+      impuestos: document.getElementById('impuestos').value,
+      validez: document.getElementById('validez').value,
+      nombreCargo: document.getElementById('nombre-cargo').value,
+      items: items,
+      guardadoEn: new Date().toLocaleString('es-AR')
+    };
+
+    db.ref('presupuestos').push(data)
+      .then(function() { showToast('✅ Presupuesto guardado','#2a7d2a'); })
+      .catch(function() { showToast('❌ Error al guardar','#CC0000'); });
+  }
+</script>
+</body>
+</html>
